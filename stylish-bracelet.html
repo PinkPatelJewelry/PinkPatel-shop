@@ -1,0 +1,235 @@
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stylish Bracelet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .header {
+            width: 100%;
+            background-color: #ff66a3;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between; /* Adjusted to include space for back arrow */
+            align-items: center;
+            position: relative;
+        }
+        .back-arrow {
+            cursor: pointer;
+            position: absolute;
+            top: 30px;
+            left: 50px;
+            width: 40px
+        }
+        .cart-container {
+            background-color: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .cart-icon {
+            width: 24px;
+            height: 24px;
+        }
+        .cart-count {
+            background-color: #ff66a3;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            margin: 20px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        .product-image {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .product-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .product-description {
+            color: #555;
+            margin: 10px 0;
+        }
+        .price {
+            font-size: 18px;
+            color: green;
+            margin: 10px 0;
+        }
+        .old-price {
+            text-decoration: line-through;
+            color: red;
+            margin-right: 10px;
+        }
+                .add-to-cart {
+            background-color: #ff66a3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .add-to-cart:hover {
+            background-color: #ff4d4d;
+        }
+        .size-select {
+            margin: 10px 0;
+        }
+        .size-option {
+            margin: 5px;
+        }
+        .arrow {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 16px;
+            color: white;
+            font-weight: bold;
+            font-size: 24px;
+            transition: 0.6s ease;
+            user-select: none;
+            border-radius: 0 3px 3px 0;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .arrow.left {
+            left: 0;
+            border-radius: 3px 0 0 3px;
+        }
+        .arrow.right {
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="Back-Arrow.png" alt="Back" class="back-arrow" onclick="goBack()">
+        <div class="cart-container" onclick="redirectToCart()" role="button" tabindex="0" aria-label="Shopping cart">
+            <img src="Cart2.png" alt="Cart" class="cart-icon">
+            <div class="cart-count">0</div>
+        </div>
+    </div>
+    <div class="container">
+        <span class="arrow left" onclick="previousImage()">&#10094;</span>
+        <img src="bracelet1.jpg" alt="Stylish Bracelet" class="product-image active">
+        <img src="bracelet2.jpg" alt="Stylish Bracelet" class="product-image">
+        <img src="bracelet3.jpg" alt="Stylish Bracelet" class="product-image">
+        <img src="bracelet4.jpg" alt="Stylish Bracelet" class="product-image">
+        <span class="arrow right" onclick="nextImage()">&#10095;</span>
+        <h1 class="product-title">Stylish Bracelet</h1>
+        <p class="product-description">A trendy bracelet perfect for any occasion.</p>
+        <div class="price">
+            <span class="old-price">QAR 10</span> QAR 7
+        </div>
+        <div class="size-select">
+            <label for="size">Size:</label>
+            <select id="size" class="size-option">
+                <option value="small">Small</option>
+                <option value="medium">Medium</option>
+                <option value="large">Large</option>
+            </select>
+        </div>
+        <button class="add-to-cart" onclick="addToCart()">Add to Cart</button>
+    </div>
+    <script>
+        // Initialize cart count from localStorage
+        let cartCount = JSON.parse(localStorage.getItem('cartCount')) || 0;
+        document.querySelector('.cart-count').innerText = cartCount;
+
+        function redirectToCart() {
+            window.location.href = 'Cart.html';
+        }
+
+        function goBack() {
+            window.history.back(); // Navigate back to the previous page
+        }
+
+        let currentImageIndex = 0;
+        const images = document.querySelectorAll('.product-image');
+
+        function showImage(index) {
+            images.forEach((img, i) => {
+                img.classList.remove('active');
+                if (i === index) {
+                    img.classList.add('active');
+                }
+            });
+        }
+
+        function previousImage() {
+            currentImageIndex = (currentImageIndex === 0) ? images.length - 1 : currentImageIndex - 1;
+            showImage(currentImageIndex);
+        }
+
+        function nextImage() {
+            currentImageIndex = (currentImageIndex === images.length - 1) ? 0 : currentImageIndex + 1;
+            showImage(currentImageIndex);
+        }
+
+        function addToCart() {
+            const selectedSize = document.getElementById('size').value;
+            const quantity = 1; // Assuming the user selects a quantity of 1
+
+            // Get product details
+            const productDetails = {
+                image: images[currentImageIndex].src,
+                name: 'Stylish Bracelet',
+                description: 'A trendy bracelet perfect for any occasion.',
+                price: 'QAR 7',
+                size: selectedSize,
+                quantity: quantity
+            };
+
+            let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            cartItems.push(productDetails);
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+
+            // Update cart count
+            cartCount += quantity;
+            document.querySelector('.cart-count').innerText = cartCount;
+            localStorage.setItem('cartCount', JSON.stringify(cartCount));
+
+            redirectToCart();
+        }
+    </script>
+</body>
+</html>

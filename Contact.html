@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Pink Patel Jewelry Shop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            position: relative;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            margin: 20px;
+        }
+        h1 { text-align: center; color: #ff66a3; }
+        label { font-weight: bold; margin-top: 10px; }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #ff66a3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #ff4d4d; }
+        .shop-link {
+            position: absolute;
+            top: 20px;
+            right: 1430px;
+            cursor: pointer;
+        }
+        .shop-link img {
+            max-width: 50px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="shop-link">
+        <img src="Back-Arrow.png" alt="Shop Icon" onclick="redirectToShop()">
+    </div>
+    <div class="container">
+        <h1>Contact Us</h1>
+        <form id="contactForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+
+            <button type="submit">Send Message</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            const date = new Date().toISOString();
+
+            const messageData = { name, email, message, date };
+            let messages = JSON.parse(localStorage.getItem('messages')) || [];
+            messages.push(messageData);
+            localStorage.setItem('messages', JSON.stringify(messages));
+
+            alert('Message sent successfully!');
+            document.getElementById('contactForm').reset();
+        });
+
+        function redirectToShop() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

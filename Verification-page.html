@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPTCHA Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .captcha-container {
+            background-color: purple;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+        }
+        .captcha-container h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .captcha-code {
+            font-size: 24px;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            background-color: white;
+            color: purple;
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .captcha-container input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .captcha-container button {
+            background-color: blue;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .captcha-container .refresh-button {
+            background-color: blue;
+            display: inline-block;
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .captcha-container .error-message {
+            color: red;
+            font-weight: bold;
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="captcha-container">
+        <h1>Enter the CAPTCHA code</h1>
+        <div class="captcha-code" id="captchaCode">QDf1sp</div>
+        <input type="text" id="captchaInput" placeholder="Enter CAPTCHA">
+        <div class="refresh-button" id="refreshButton">Refresh CAPTCHA</div>
+        <button id="checkButton">Check</button>
+        <div class="error-message" id="errorMessage">CAPTCHA field is empty</div>
+    </div>
+
+    <script>
+        // Generate a random CAPTCHA code
+        function generateCaptcha() {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let captcha = '';
+            for (let i = 0; i < 6; i++) {
+                captcha += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return captcha;
+        }
+
+        const captchaCodeElement = document.getElementById('captchaCode');
+        const captchaInput = document.getElementById('captchaInput');
+        const checkButton = document.getElementById('checkButton');
+        const errorMessage = document.getElementById('errorMessage');
+        const refreshButton = document.getElementById('refreshButton');
+
+        function refreshCaptcha() {
+            const newCaptcha = generateCaptcha();
+            captchaCodeElement.textContent = newCaptcha;
+        }
+
+        refreshCaptcha(); // Initialize with a new CAPTCHA code
+
+        checkButton.addEventListener('click', function() {
+            const enteredCaptcha = captchaInput.value;
+            if (enteredCaptcha === '') {
+                errorMessage.textContent = 'CAPTCHA field is empty';
+                errorMessage.style.display = 'block';
+            } else if (enteredCaptcha !== captchaCodeElement.textContent) {
+                errorMessage.textContent = 'Incorrect CAPTCHA';
+                errorMessage.style.display = 'block';
+            } else {
+                errorMessage.style.display = 'none';
+                window.location.href = 'index.html'; // Redirect to main shop page
+            }
+        });
+
+        refreshButton.addEventListener('click', function() {
+            refreshCaptcha();
+            captchaInput.value = '';
+            errorMessage.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

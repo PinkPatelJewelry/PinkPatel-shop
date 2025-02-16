@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pink Patel Jewelry Shop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .header {
+            background-color: #ff66a3;
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+            position: relative;
+            transition: opacity 0.5s ease;
+            z-index: 1;
+        }
+        .header h1 { margin: 0; font-size: 36px; }
+        .header p { font-size: 18px; margin-top: 10px; }
+        .nav {
+            background-color: #ff4d4d;
+            padding: 5px 20px;
+            display: flex;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            margin: 0 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .nav a:hover { background-color: #ff66a3; }
+        .search-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .search-container input {
+            width: 400px;
+            padding: 15px;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+        }
+        .search-container button {
+            background-color: white;
+            color: #ff66a3;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 16px;
+        }
+        .autocomplete-suggestions {
+            position: absolute;
+            top: 60px;
+            width: 400px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            max-height: 200px;
+            overflow-y: auto;
+            border-radius: 0 0 20px 20px;
+            z-index: 1000;
+        }
+        .autocomplete-suggestion {
+            padding: 15px;
+            background-color: #fff;
+            color: #000;
+            cursor: pointer;
+        }
+        .autocomplete-suggestion:hover {
+            background-color: #ff66a3;
+            color: white;
+        }
+        .cart-container {
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            background-color: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+        .cart-icon { width: 40px; height: 40px; position: relative; }
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ff4d4d;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .logout-container {
+            position: absolute;
+            top: 70px;
+            left: 20px;
+            background-color: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+        .logout-icon { width: 40px; height: 40px; position: relative; }
+        .content {
+            padding: 20px;
+            padding-top: 100px;
+            flex: 1;
+        }
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .product {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        .product:hover {
+            transform: translateY(-5px);
+        }
+        .product img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .product h3 { margin: 10px 0; }
+        .product p { color: #888; margin: 10px 0; }
+        .product button {
+            background-color: #ff66a3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .product .quantity-input {
+            width: 50px;
+            padding: 5px;
+            margin-right: 10px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .sold-out {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: red;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .discount-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: green;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .price { font-size: 18px; margin: 10px 0; }
+        .old-price { text-decoration: line-through; color: red; }
+
+        @media (max-width: 768px) {
+            .search-container input {
+                width: 100%; /* Allow input to take full width */
+            }
+            .products {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adjust grid for smaller screens */
+            }
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #ff66a3;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            opacity: 1;
+        }
+        .brand {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="brand">PinkPatel</div>
+    <div class="header" id="header">
+        <h1>ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴘɪɴᴋ ᴘᴀᴛᴇʟ ᴊᴇᴡᴇʟʀʏ ꜱʜᴏᴘ</h1>
+        <p>𝙳𝚒𝚜𝚌𝚘𝚟ᴇʀ 𝙾ᴜʀ 𝙴𝚡𝚚ᴜɪsɪᴛᴇ 𝙲ᴏʟ𝚕ᴇᴄᴛɪᴏ𝚗 ᴏғ 𝙴ʟᴇ𝚐ᴀɴᴛ 𝙹ᴇᴡᴇʟʀʏ</p>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search for products..." aria-label="Search products">
+            <button onclick="searchProducts()">Search</button>
+            <div id="suggestions" class="autocomplete-suggestions" role="listbox"></div>
+        </div>
+        <div class="cart-container" onclick="redirectToCart()" role="button" tabindex="0" aria-label="Shopping cart">
+            <img src="Cart2.png" alt="Cart" class="cart-icon">
+            <div class="cart-count">0</div>
+        </div>
+                <div class="logout-container" onclick="logout()" role="button" tabindex="0" aria-label="Logout">
+            <img src="Logout.png" alt="Logout" class="logout-icon">
+        </div>
+    </div>
+    <nav class="nav" role="navigation">
+        <a href="javascript:location.reload();">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+<div class="content">
+    <div class="products" id="products">
+        <!-- Product items will be dynamically generated here -->
+        <div class="product" data-name="Elegant Ocean Pearl Bracelet">
+            <div class="sold-out" role="alert">Sold Out</div>
+            <img src="Elegant Ocean Pearl Bracelet.jpg" alt="Elegant Ocean Pearl Bracelet" onerror="this.onerror=null; this.src='placeholder.jpg';">
+            <h3>Elegant Ocean Pearl Bracelet</h3>
+            <p>A beautiful bracelet with ocean pearls.</p>
+            <div class="price">QAR 0</div>
+            <button disabled>Sold Out</button>
+        </div>
+        <div class="product" data-name="Elegant Pastel Bracelet">
+            <div class="sold-out" role="alert">Sold Out</div>
+            <img src="Elegant Pastel Bracelet.jpg" alt="Elegant Pastel Bracelet" onerror="this.onerror=null; this.src='placeholder.jpg';">
+            <h3>Elegant Pastel Bracelet</h3>
+            <p>A vibrant bracelet with sunrise colors.</p>
+            <div class="price">QAR 0</div>
+            <button disabled>Sold Out</button>
+        </div>
+        <div class="product" data-name="Elegant Twilight Glimmer Bracelet">
+            <div class="sold-out" role="alert">Sold Out</div>
+            <img src="Elegant Twilight Glimmer Bracelet.jpg" alt="Elegant Twilight Glimmer Bracelet" onerror="this.onerror=null; this.src='placeholder.jpg';">
+            <h3>Elegant Twilight Glimmer Bracelet</h3>
+            <p>An enchanting bracelet resembling the night sky.</p>
+            <div class="price">QAR 0</div>
+            <button disabled>Sold Out</button>
+        </div>
+        <div class="product" data-name="Stylish Bracelet" onclick="redirectToProductPage()">
+            <div class="discount-badge" role="alert">Discount</div>
+            <img src="Bracelet2.jpg" alt="Stylish Bracelet On Sale" onerror="this.onerror=null; this.src='placeholder.jpg';">
+            <h3>Stylish Bracelet</h3>
+            <p>A trendy bracelet perfect for any occasion.</p>
+            <div class="price">
+                <span class="old-price">QAR 10</span> QAR 7
+            </div>
+            <input type="number" class="quantity-input" min="1" value="1">
+            <button onclick="event.stopPropagation(); addToCart(this)">Add to Cart</button>
+        </div>
+    </div>
+    <div class="products" id="new-products">
+        <!-- New product item placed below -->
+        <div class="product">
+            <div class="discount-badge" role="alert">New</div>
+            <img src="NewItem.jpg" alt="New Item" onerror="this.onerror=null; this.src='placeholder.jpg';">
+            <h3>Elegant Beaded Bracelet</h3>
+            <p>A timeless piece adorned with intricate beads. Perfect for any outfit and occasion.</p>
+            <div class="price">QAR 10</div>
+            <input type="number" class="quantity-input" min="1" value="1">
+            <button onclick="event.stopPropagation(); addToCart(this)">Add to Cart</button>
+        </div>
+    </div>
+</div>
+
+    <div id="notification" class="notification" role="alert"></div>
+    <script>
+        // Initialize cart count from localStorage
+        let cartCount = JSON.parse(localStorage.getItem('cartCount')) || 0;
+        document.querySelector('.cart-count').innerText = cartCount;
+
+        function redirectToCart() {
+            window.location.href = 'cart.html';
+        }
+
+        function redirectToProductPage() {
+            window.location.href = "Stylish-Bracelet.html";
+        }
+
+        function logout() {
+            localStorage.removeItem('cartItems');
+            localStorage.removeItem('cartCount');
+            // Redirect to login page or clear session
+            window.location.href = 'login-page.html'; // Update this to your login page
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.innerText = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000); // Hide after 3 seconds
+        }
+
+        function addToCart(button) {
+            const quantityInput = button.previousElementSibling;
+            const quantity = parseInt(quantityInput.value);
+
+            if (isNaN(quantity) || quantity <= 0) {
+                showNotification("Please enter a valid quantity.");
+                return;
+            }
+
+            // Update cart count
+            let cartCount = JSON.parse(localStorage.getItem('cartCount')) || 0;
+            cartCount += quantity;
+            document.querySelector('.cart-count').innerText = cartCount;
+            localStorage.setItem('cartCount', JSON.stringify(cartCount));
+
+            // Save product to localStorage
+            let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const productDetails = getCurrentProductDetails(button, quantity);
+            cartItems.push(productDetails);
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+
+            // Show custom notification
+            showNotification(`Added ${quantity} item(s) to cart!`);
+        }
+
+        function getCurrentProductDetails(button, quantity) {
+            const productElement = button.parentElement;
+            const productImage = productElement.querySelector('img').src;
+            const productName = productElement.querySelector('h3').innerText;
+            const productDescription = productElement.querySelector('p').innerText;
+            const priceElement = productElement.querySelector('.price');
+            const oldPriceElement = priceElement.querySelector('.old-price');
+            const productPrice = oldPriceElement ? priceElement.childNodes[2].textContent.trim() : priceElement.textContent.replace('QAR ', '').trim();
+
+            return {
+                image: productImage,
+                name: productName,
+                description: productDescription,
+                price: productPrice,
+                quantity: quantity
+            };
+        }
+
+        function searchProducts() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const products = document.getElementsByClassName('product');
+            for (let i = 0; i < products.length; i++) {
+                const productName = products[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+                products[i].style.display = productName.includes(input) ? '' : 'none';
+            }
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const input = this.value.toLowerCase();
+            const suggestions = document.getElementById('suggestions');
+            suggestions.innerHTML = '';
+            if (input.length > 0) {
+                const products = document.getElementsByClassName('product');
+                for (let i = 0; i < products.length; i++) {
+                    const productName = products[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+                    if (productName.includes(input)) {
+                        const suggestion = document.createElement('div');
+                        suggestion.className = 'autocomplete-suggestion';
+                        suggestion.innerHTML = products[i].getElementsByTagName('h3')[0].innerText;
+                        suggestion.onclick = function() {
+                            document.getElementById('searchInput').value = this.innerText;
+                            suggestions.innerHTML = '';
+                            searchProducts();
+                        };
+                        suggestions.appendChild(suggestion);
+                    }
+                }
+            }
+        });
+
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            const scrollPosition = window.scrollY;
+            const opacity = Math.max(0.5, 1 - scrollPosition / 200);
+            header.style.opacity = opacity;
+        });
+
+        // Randomize product order on page load
+        window.addEventListener('load', () => {
+            const productsContainer = document.getElementById('products');
+            const products = Array.from(productsContainer.children);
+            products.sort(() => Math.random() - 0.5);
+            products.forEach(product => productsContainer.appendChild(product));
+        });
+
+        // Hover effect for Stylish Bracelet images
+        const stylishBraceletImages = [
+            'Bracelet1.jpg',
+            'Bracelet2.jpg',
+            'Bracelet3.jpg',
+            'Bracelet4.jpg'
+        ];
+
+        let currentImageIndex = 0;
+        const stylishBracelet = document.querySelector('.product img[alt="Stylish Bracelet On Sale"]');
+
+        stylishBracelet.addEventListener('mouseenter', () => {
+            const changeImageInterval = setInterval(() => {
+                currentImageIndex = (currentImageIndex + 1) % stylishBraceletImages.length;
+                stylishBracelet.src = stylishBraceletImages[currentImageIndex];
+            }, 3000);
+
+            stylishBracelet.addEventListener('mouseleave', () => {
+                clearInterval(changeImageInterval);
+                stylishBracelet.src = 'Bracelet2.jpg'; // Reset to the original image
+            }, { once: true });
+        });
+
+                // Update cart count when an item is removed
+        function updateCartCountOnRemove() {
+            let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            let cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+            document.querySelector('.cart-count').innerText = cartCount;
+            localStorage.setItem('cartCount', JSON.stringify(cartCount));
+        }
+
+        // Remove item from cart logic
+        function removeItemFromCart(itemName) {
+            let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            cartItems = cartItems.filter(item => item.name !== itemName);
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            updateCartCountOnRemove();
+        }
+
+        // Call updateCartCountOnRemove on page load to ensure cart count is accurate
+        window.addEventListener('load', updateCartCountOnRemove);
+
+        // Example of how to remove an item from the cart (you can integrate this logic based on your use case)
+        // removeItemFromCart('Stylish Bracelet');
+    </script>
+</body>
+</html>

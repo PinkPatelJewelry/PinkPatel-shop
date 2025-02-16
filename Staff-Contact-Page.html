@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Messages - Pink Patel Jewelry Shop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #ff66a3;
+        }
+        .message-container {
+            width: 90%;
+            max-width: 600px;
+            margin: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .message-container h2 {
+            margin: 0;
+            color: #ff66a3;
+        }
+        .message-container p {
+            margin: 5px 0;
+        }
+        .message-container .date {
+            color: #888;
+            font-size: 12px;
+        }
+        .message-container .delete-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Messages from Users</h1>
+    <div id="messages">
+        <!-- Messages will be dynamically loaded here -->
+    </div>
+    <script>
+        function loadMessages() {
+            const messagesContainer = document.getElementById('messages');
+            const messages = JSON.parse(localStorage.getItem('messages')) || [];
+
+            messagesContainer.innerHTML = '';
+
+            messages.forEach((message, index) => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message-container';
+
+                const messageName = document.createElement('h2');
+                messageName.textContent = message.name;
+                messageDiv.appendChild(messageName);
+
+                const messageEmail = document.createElement('p');
+                messageEmail.textContent = `Email: ${message.email}`;
+                messageDiv.appendChild(messageEmail);
+
+                const messageText = document.createElement('p');
+                messageText.textContent = message.message;
+                messageDiv.appendChild(messageText);
+
+                const messageDate = document.createElement('p');
+                messageDate.className = 'date';
+                messageDate.textContent = `Date: ${message.date}`;
+                messageDiv.appendChild(messageDate);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'X';
+                deleteButton.className = 'delete-button';
+                deleteButton.onclick = function() {
+                    deleteMessage(index);
+                };
+                messageDiv.appendChild(deleteButton);
+
+                messagesContainer.appendChild(messageDiv);
+            });
+        }
+
+        function deleteMessage(index) {
+            let messages = JSON.parse(localStorage.getItem('messages')) || [];
+            messages.splice(index, 1);
+            localStorage.setItem('messages', JSON.stringify(messages));
+            loadMessages();
+        }
+
+        document.addEventListener('DOMContentLoaded', loadMessages);
+    </script>
+</body>
+</html>

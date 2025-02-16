@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pink Patel Jewelry Shop</title>
+    <style>
+        /* ... (styles remain the same) */
+    </style>
+</head>
+<body>
+    <div class="header" id="header">
+        <h1>ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴘɪɴᴋ ᴘᴀᴛᴇʟ ᴊᴇᴡᴇʟʀʏ ꜱʜᴏᴘ</h1>
+        <p>𝙳𝚒𝚜𝚌𝚘𝚟𝚎𝚛 𝚘𝚞𝚛 𝚎𝚡𝚚𝚞𝚒𝚜𝚒𝚝𝚎 𝚌𝚘𝚕𝚕𝚎𝚌𝚝𝚒𝚘𝚗 𝚘𝚏 ᴇʟᴇɢᴀɴᴛ ᴊᴇᴡᴇʟʀʏ</p>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search for products...">
+            <button onclick="searchProducts()">Search</button>
+            <div id="suggestions" class="autocomplete-suggestions"></div>
+        </div>
+        <div class="cart-container" onclick="redirectToCart()">
+            <img src="Cart2.png" alt="Cart" class="cart-icon">
+            <div class="cart-count">0</div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="products" id="products">
+            <div class="product">
+                <div class="sold-out">Sold Out</div>
+                <img src="Elegant Ocean Pearl Bracelet.jpg" alt="Elegant Ocean Pearl Bracelet">
+                <h3>Elegant Ocean Pearl Bracelet</h3>
+                <p>A beautiful bracelet with ocean pearls.</p>
+                <div class="price">QAR 0</div>
+                <button disabled>Sold Out</button>
+            </div>
+            <div class="product">
+                <div class="sold-out">Sold Out</div>
+                <img src="Elegant Pastel Bracelet.jpg" alt="Elegant Pastel Bracelet">
+                <h3>Elegant Pastel Bracelet</h3>
+                <p>A vibrant bracelet with sunrise colors.</p>
+                <div class="price">QAR 0</div>
+                <button disabled>Sold Out</button>
+            </div>
+            <div class="product">
+                <div class="sold-out">Sold Out</div>
+                <img src="Elegant Twilight Glimmer Bracelet.jpg" alt="Elegant Twilight Glimmer Bracelet">
+                <h3>Elegant Twilight Glimmer Bracelet</h3>
+                <p>An enchanting bracelet resembling the night sky.</p>
+                <div class="price">QAR 0</div>
+                <button disabled>Sold Out</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function redirectToCart() {
+            window.location.href = 'cart-page.html';
+        }
+
+        function searchProducts() {
+            var input = document.getElementById('searchInput').value.toLowerCase();
+            var products = document.getElementsByClassName('product');
+            for (var i = 0; i < products.length; i++) {
+                var productName = products[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+                if (productName.includes(input)) {
+                    products[i].style.display = '';
+                } else {
+                    products[i].style.display = 'none';
+                }
+            }
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function() {
+            var input = this.value.toLowerCase();
+            var suggestions = document.getElementById('suggestions');
+            suggestions.innerHTML = '';
+            if (input.length > 0) {
+                var products = document.getElementsByClassName('product');
+                for (var i = 0; i < products.length; i++) {
+                    var productName = products[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+                    if (productName.startsWith(input)) { // Changed to startsWith
+                        var suggestion = document.createElement('div');
+                        suggestion.className = 'autocomplete-suggestion';
+                        suggestion.innerHTML = products[i].getElementsByTagName('h3')[0].innerText;
+                        suggestion.onclick = function() {
+                            document.getElementById('searchInput').value = this.innerText;
+                            suggestions.innerHTML = '';
+                            searchProducts();
+                        };
+                        suggestions.appendChild(suggestion);
+                    }
+                }
+            }
+        });
+
+        window.addEventListener('scroll', function() {
+            var header = document.getElementById('header');
+            var scrollPosition = window.scrollY;
+            var opacity = Math.max(0.5, 1 - scrollPosition / 200);
+            header.style.opacity = opacity;
+        });
+    </script>
+</body>
+</html>

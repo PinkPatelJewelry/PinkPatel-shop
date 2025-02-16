@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff Login - Pink Patel Jewelry</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f8f8f8; }
+  .header { text-align: center; padding: 50px 20px; background-color: #ff66a3; color: white; }
+  .header h1 { margin: 0; font-size: 36px; }
+  .container { max-width: 400px; margin: 50px auto; padding: 20px; background-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 10px; }
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+  .form-group input { width: calc(100% - 20px); padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+  .login-button { display: block; width: 100%; background-color: #ff66a3; color: white; padding: 15px; text-align: center; border: none; border-radius: 5px; cursor: pointer; }
+  .login-error { color: red; display: none; text-align: center; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="header">
+<h1>STAFF LOGIN</h1>
+</div>
+<div class="container">
+<div class="form-group">
+<label for="staff-email">Email</label>
+<input type="email" id="staff-email" required>
+</div>
+<div class="form-group">
+<label for="staff-password">Password</label>
+<input type="password" id="staff-password" required>
+</div>
+<button class="login-button" onclick="login()">LOGIN</button>
+<p class="login-error" id="login-error">Access Denied. Try Again.</p>
+</div>
+<script>
+function login() {
+  var email = document.getElementById("staff-email").value;
+  var password = document.getElementById("staff-password").value;
+  var loginError = document.getElementById("login-error");
+
+  if (email === "PinkPatelJewelry@gmail.com" && password === "remembertheLordiswatchingyou") {
+    window.location.href = "staff-checkout.html"; // Redirect to staff checkout page
+  } else {
+    loginError.style.display = "block";
+  }
+}
+</script>
+</body>
+</html>

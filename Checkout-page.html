@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pink Patel Jewelry Shop - Checkout</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f8f8f8; }
+  .header { text-align: center; padding: 50px 20px; background-color: #ff66a3; color: white; }
+  .header h1 { margin: 0; font-size: 36px; }
+  .checkout-container { max-width: 800px; margin: 20px auto; padding: 20px; background-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 10px; }
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+  .form-group input { width: calc(100% - 20px); padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+  .cart-items { margin-bottom: 20px; }
+  .cart-items h2 { font-size: 24px; margin-top: 0; color: #ff66a3; }
+  .cart-items .product { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #ddd; }
+  .cart-items .product img { width: 60px; height: 60px; border-radius: 5px; }
+  .cart-items .product-name { flex: 1; margin-left: 10px; }
+  .cart-items .price { font-weight: bold; color: #ff66a3; }
+  .cart-items .remove-item { cursor: pointer; color: red; margin-left: 10px; font-weight: bold; }
+  .total { display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; margin-top: 20px; }
+  .place-order { display: block; width: 100%; background-color: lightgray; color: white; padding: 15px; text-align: center; border: none; border-radius: 5px; cursor: not-allowed; margin-top: 20px; }
+  .place-order:enabled { background-color: #ff66a3; cursor: pointer; }
+  .back-to-cart { display: block; width: 100%; background-color: #C7A9D4; color: white; padding: 15px; text-align: center; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 20px; visibility: visible; }
+  .terms { font-size: 12px; text-align: center; margin-top: 20px; }
+</style>
+</head>
+<body>
+<div class="header">
+<h1>CHECKOUT</h1>
+</div>
+<div class="checkout-container">
+<div class="checkout-details">
+<div class="form-group">
+<label for="email">Email Address</label>
+<input type="email" id="email" name="email" required>
+</div>
+<div class="form-group">
+<label for="phone">Phone Number</label>
+<input type="tel" id="phone" name="phone" required>
+</div>
+<div class="form-group">
+<label for="address">Delivery Address</label>
+<input type="text" id="address" name="address" required>
+</div>
+<div class="form-group">
+<label for="payment">Payment Method</label>
+<input type="text" id="payment" name="payment" value="Cash on Delivery" disabled>
+</div>
+</div>
+<div class="cart-items">
+<h2>Cart Items</h2>
+<div class="product" id="productTemplate" style="display: none;">
+<img class="product-image" src="" alt="Product Image">
+<span class="product-name"></span>
+<span class="price"></span>
+<span class="remove-item" onclick="removeItem(this)">X</span>
+</div>
+<div class="total">
+<span>Total to Pay:</span>
+<span class="price" id="totalPrice">QAR 0</span>
+</div>
+<button class="back-to-cart" onclick="goBackToCart()">BACK TO CART</button>
+<button class="place-order" id="placeOrderButton" onclick="placeOrder()" disabled>PLACE ORDER</button>
+</div>
+<div class="terms">
+<input type="checkbox" id="termsCheckbox">
+<label for="termsCheckbox">By placing the order, you agree to our <a href="Terms & Conditions.html">Terms & Conditions, privacy, and returns</a> policies.</label>
+</div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  var cart = JSON.parse(localStorage.getItem("cart")) || [];
+  var productTemplate = document.getElementById("productTemplate");
+  var cartContainer = document.querySelector(".cart-items");
+  var totalPrice = 0;
+
+  cart.forEach(function(item, index) {
+    var product = productTemplate.cloneNode(true);
+    product.style.display = "flex";
+    product.querySelector(".product-image").src = item.image;
+    product.querySelector(".product-name").textContent = item.name;
+    product.querySelector(".price").textContent = "QAR " + item.price;
+    product.querySelector(".remove-item").setAttribute("data-index", index);
+    cartContainer.insertBefore(product, document.querySelector(".total"));
+    totalPrice += item.price;
+  });
+
+  document.getElementById("totalPrice").textContent = "QAR " + totalPrice;
+
+  // Enable the place order button if all inputs are filled and terms checkbox is checked
+  var inputs = document.querySelectorAll('.form-group input');
+  var termsCheckbox = document.getElementById('termsCheckbox');
+  var placeOrderButton = document.getElementById('placeOrderButton');
+
+  function validateForm() {
+    var allFilled = true;
+    inputs.forEach(function(input) {
+      if (!input.value) {
+        allFilled = false;
+      }
+    });
+    if (allFilled && termsCheckbox.checked) {
+      placeOrderButton.disabled = false;
+      placeOrderButton.style.backgroundColor = '#ff66a3';
+      placeOrderButton.style.cursor = 'pointer';
+    } else {
+      placeOrderButton.disabled = true;
+      placeOrderButton.style.backgroundColor = 'lightgray';
+      placeOrderButton.style.cursor = 'not-allowed';
+    }
+  }
+
+  inputs.forEach(function(input) {
+    input.addEventListener('input', validateForm);
+  });
+
+  termsCheckbox.addEventListener('change', validateForm);
+});
+
+function removeItem(element) {
+  var index = element.getAttribute("data-index");
+  var cart = JSON.parse(localStorage.getItem("cart")) || [];
+  var product = element.parentNode;
+  var price = parseInt(product.querySelector(".price").textContent.replace("QAR ", ""));
+  var totalPrice = parseInt(document.getElementById("totalPrice").textContent.replace("QAR ", ""));
+  totalPrice -= price;
+  document.getElementById("totalPrice").textContent = "QAR " + totalPrice;
+  product.remove();
+  cart.splice(index, 1);
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function placeOrder() {
+  var email = document.getElementById("email").value;
+  var phone = document.getElementById("phone").value;
+  var address = document.getElementById("address").value;
+  var cartItems = document.querySelectorAll(".cart-items .product");
+  var items = [];
+  cartItems.forEach(function(product) {
+    var itemName = product.querySelector(".product-name").textContent;
+    var itemPrice = product.querySelector(".price").textContent;
+    var itemImage = product.querySelector(".product-image").src;
+    items.push({ name: itemName, price: itemPrice, image: itemImage });
+  });
+
+  var order = { email: email, phone: phone, address: address, items: items };
+
+  // Store order in localStorage (or send to server in a real application)
+  var orders = JSON.parse(localStorage.getItem("orders")) || [];
+  orders.push(order);
+  localStorage.setItem("orders", JSON.stringify(orders));
+
+  // Clear the cart
+  localStorage.removeItem("cart");
+
+  // Redirect to main-shop-page.html
+  window.location.href = "index.html";
+}
+
+function goBackToCart() {
+  window.location.href = "cart.html"; // Update this with the actual path to your cart page
+}
+</script>
+</body>
+</html>

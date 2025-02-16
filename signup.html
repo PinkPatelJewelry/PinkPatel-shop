@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pink Patel Sign-Up</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            background-color: #f4f4f4;
+        }
+        .slideshow-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+        .slide.active {
+            opacity: 1;
+        }
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            width: 300px;
+            margin: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+        .form-container h1 {
+            margin-bottom: 10px;
+            color: purple;
+            text-align: center;
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+            color: purple;
+            text-align: center;
+        }
+        .form-container p {
+            margin-bottom: 20px;
+            color: gray;
+            text-align: center;
+        }
+        .form-container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .password-container {
+            position: relative;
+        }
+        .password-container input {
+            width: calc(100% - 50px); /* Adjusted width */
+            display: inline-block;
+        }
+        .password-container .toggle-password {
+            position: absolute;
+            right: 0px; /* Moved further to the right */
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            background-color: transparent;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            width: 30px; /* Bigger size */
+            height: 30px; /* Bigger size */
+            padding: 0;
+            text-align: center;
+            line-height: 30px; /* Adjusted to match height */
+            font-size: 16px; /* Slightly bigger font size */
+            color: purple;
+        }
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: purple;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-container button:hover {
+            background-color: darkpurple;
+        }
+        .form-container a {
+            color: purple;
+            text-decoration: none;
+            display: block;
+            margin-top: 10px;
+        }
+        .loading-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loading-screen img {
+            width: 50px;
+            height: 50px;
+        }
+        .message {
+            display: none;
+            margin-bottom: 15px;
+            padding: 10px;
+            color: white;
+            background-color: red;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="slideshow-container">
+    <div class="slide" style="background-image: url('image1.jpg');"></div>
+    <div class="slide" style="background-image: url('image2.jpg');"></div>
+    <div class="slide" style="background-image: url('image3.jpg');"></div>
+    <div class="slide" style="background-image: url('image4.jpg');"></div>
+</div>
+
+<div class="form-container">
+    <h1>Pink Patel Jewelry</h1>
+    <p>Your one-stop shop for elegant Jewelry</p>
+    <h2>Sign Up</h2>
+    <div id="message" class="message"></div>
+    <form id="signupForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <label for="password">Password:</label>
+        <div class="password-container">
+            <input type="password" id="password" name="password" required>
+            <button type="button" class="toggle-password" id="togglePassword">👁</button>
+        </div>
+        <button type="submit">Sign Up</button>
+        <a href="#" id="loginLink">Already have an Account? Login</a>
+    </form>
+</div>
+
+<div class="loading-screen" id="loadingScreen">
+    <img src="loading.gif" alt="Loading...">
+</div>
+
+<script>
+    let slideIndex = 0;
+    const slides = document.getElementsByClassName('slide');
+    const loadingScreen = document.getElementById('loadingScreen');
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const message = document.getElementById('message');
+
+    function showSlides() {
+        for (let i = 0; i < slides.length; i++) {
+            slides[i].classList.remove('active');
+        }
+        slideIndex++;
+        if (slideIndex > slides.length) { slideIndex = 1 }
+        slides[slideIndex - 1].classList.add('active');
+        setTimeout(showSlides, 5000);
+    }
+
+    showSlides();
+
+    window.addEventListener('load', function() {
+        loadingScreen.style.display = 'none';
+    });
+
+    document.getElementById('loginLink').addEventListener('click', function(event) {
+        event.preventDefault();
+        window.location.href = 'login-page.html';
+    });
+
+    document.getElementById('signupForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        if (!username || !email || !password) {
+            showMessage("Please fill out all fields.");
+            return;
+        }
+
+        const userData = {
+            username: username,
+            email: email,
+            password: password,
+            verified: false
+        };
+
+        // Display loading screen
+        loadingScreen.style.display = 'flex';
+
+        // Simulate a delay for loading screen
+        setTimeout(() => {
+            // Save user data in local storage
+            try {
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+                const userExists = users.some(user => user.username === username || user.email === email);
+                if (userExists) {
+                    showMessage("An account with this username or email already exists.");
+                    loadingScreen.style.display = 'none';
+                    return;
+                }
+                users.push(userData);
+                localStorage.setItem('users', JSON.stringify(users));
+
+                // Redirect to the verification page
+                window.location.href = 'verification-page.html';
+            } catch (error) {
+                console.error("Error saving user data:", error);
+                showMessage("An error occurred while saving your data. Please try again.");
+                loadingScreen.style.display = 'none';
+            }
+        }, 3000);
+    });
+
+    togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        this.textContent = type === 'password' ? '👁' : '🔒';
+    });
+
+    function showMessage(text) {
+        message.textContent = text;
+        message.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
